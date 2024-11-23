@@ -10,21 +10,38 @@ Display::Display(Lane* lane_) {
     Serial.println("SSD1306 allocation success!");
   }
 
-void Display::makeStep(int row, int column) {
+void Display::makeStep(int row, int column, int position) {
   int xPos = (SCREEN_WIDTH * (column/2)) + 1;
   int yPos = (SCREEN_HEIGHT * (row/4)) + 1;
   int width = (SCREEN_WIDTH / 2) - 2;
   int height = (SCREEN_HEIGHT / 4) - 2;
   display.drawRoundRect(xPos, yPos, width, height, 4, WHITE);
-  int stepPos = lane->stepPos;
+  if (lane->sequencer[position]->on) {
+    stepText(0, width, height);
+    display.print(position);
+    stepText(1, width, height);
+    display.print(lane->sequencer[position]->sampleChop);
+    stepText(2, width, height);
+    display.print(lane->sequencer[position]->pitch);
+  }
+}
+
+void Display::stepText(int position, int width, int height) {
   int x, y;
   int w, h;
-  //need to display step number, sample chop, pitch, and if its on or off
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
   display.getTextBounds("1", 0, 0, &x, &y, &w, &h);
-  display.setCursor(xPos + 1, yPos + ((height - h)/2));
-  display.print(lane->stepPos);
+  display.setCursor(xPos + (width * position/5) + 1, yPos + ((height - h)/2));
+}
+
+void Display::makeLane() {
+  for (int i = 0; i < 4; i ++) {
+    int stepAdjust = i - 1;
+    makeStep(i, 0, lane->stepPos + stepAdjust);
+  }
 }
 
 void Display::update() {
-
+  makeLane();
 }

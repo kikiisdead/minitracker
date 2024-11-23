@@ -15,8 +15,9 @@ class Display {
 private:
   Adafruit_SSD1306 display;
   Lane* lane;
-  void makeStep(int row, int column);
+  void makeStep(int row, int column, int position);
   void makeLane();
+  void stepText(int position, int width, int height);
 public:
   Display(Lane* lane_);
   void update();
