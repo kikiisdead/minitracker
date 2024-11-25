@@ -18,7 +18,7 @@ void Button::update() {
     hold();
   } else if (buttonState == HIGH && lastButtonState == LOW && timeSinceEvent > 5) {  // button release
     release();
-    timeSinceEvent = 0;
+    timeSinceEvent = 0; //elapsed millis to set debounce time
   } 
   lastButtonState = buttonState;
 }

@@ -22,7 +22,8 @@ private:
   int timePerStep;
 public:
   Lane();
-  Step* sequencer[128]; //max of 128 steps gets initialized in the constructor
+  std::vector<Step**> patterns;
+  int selectedPattern;
   int stepPos;
   int sequenceLength;
   StevesAwesomeSamplePlayer samplePlayer;
@@ -32,6 +33,8 @@ public:
   void down();
   void left() {}; //not really doing anything
   void right() {}; //not really doing anything
+  void generatePattern();
+  Step** getSelectedPattern();
 };
 
 #endif

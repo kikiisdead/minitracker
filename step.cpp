@@ -5,6 +5,7 @@ Step::Step(unsigned int _sampleChop, int _pitch, bool _on) {
   pitch = _pitch;
   on = _on;
   selected = ON;
+  type = "s";
 }
 
 void Step::left() {

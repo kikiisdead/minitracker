@@ -4,6 +4,7 @@
 #include <SD.h>
 #include <SerialFlash.h>
 #include <StevesAwesomeButton.h>
+#include <typeinfo>
 
 #include "lane.h"
 #include "editable.h"
@@ -23,12 +24,16 @@ Button rightButton(RIGHTBUTTON);
 Button editButton(EDITBUTTON);
 
 Lane lane1 = Lane();
+Lane lane2 = Lane();
+Lane lane3 = Lane();
+Lane lane4 = Lane();
+Lane* lanes[4] = { &lane1, &lane2, &lane3, &lane4 };
 AudioOutputI2S i2sOut;
 AudioConnection patchcord1(lane1.samplePlayer, 0, i2sOut, 0);
 AudioConnection patchcord2(lane1.samplePlayer, 0, i2sOut, 1);
 AudioControlSGTL5000 audioShield;
 
-Display display(&lane1);
+Display display(&lane1); //figure out singleton so that I'm making sure that there is only one display object
 
 Editable* edit = &lane1;
 
@@ -41,11 +46,13 @@ void setup() {
   audioShield.volume(0.5);
 
   lane1.displayUpdateHandler(displayUpdate);
+  lane1.generatePattern();
 
-  upButton.pressHandler(up);
-  downButton.pressHandler(down);
-  leftButton.pressHandler(left);
-  rightButton.pressHandler(right);
+  upButton.pressHandler(upPress);
+  downButton.pressHandler(downPress);
+  leftButton.pressHandler(leftPress);
+  rightButton.pressHandler(rightPress);
+  editButton.pressHandler(editPress);
 }
 
 void loop() {
@@ -58,24 +65,33 @@ void editUpdate() {
   downButton.update();
   leftButton.update();
   rightButton.update();
+  editButton.update();
 }
 
 void displayUpdate() {
   display.update();
 }
 
-void up() { //wrpping the abstract function into a static function
+void upPress() {  //wrapping the abstract function into a static function. the pointer to this function will call different functions based on the type of Editable object.
   edit->up();
 }
 
-void down() {
+void downPress() {
   edit->down();
 }
 
-void left() {
+void leftPress() {
   edit->left();
 }
 
-void right() {
+void rightPress() {
   edit->right();
+}
+
+void editPress() {
+  if (edit->type == (char)"l") {
+    edit = lane1.getSelectedPattern()[lane1.stepPos];  //get pointer to the Step object at the position in the pattern
+  } else if (edit->type == (char)"s") {
+    edit = &lane1;
+  }
 }

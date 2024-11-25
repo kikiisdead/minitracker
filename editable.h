@@ -5,6 +5,7 @@
 
 class Editable {
 public:
+  char type;
   virtual void left() = 0;
   virtual void right() = 0;
   virtual void up() = 0;

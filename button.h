@@ -2,7 +2,6 @@
 #define button_h
 
 #include <Arduino.h>
-#include "editable.h"
 
 class Button {
 private:
